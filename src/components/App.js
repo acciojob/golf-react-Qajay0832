@@ -1,7 +1,11 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState,useEffect } from "react";
 import '../styles/App.css';
 
+
+
+
 class App extends Component {
+    
     constructor(props) {
         super(props)
         this.state = {
@@ -11,23 +15,38 @@ class App extends Component {
         };
         this.renderChoice = this.renderBallOrButton.bind(this)
         this.buttonClickHandler = this.buttonClickHandler.bind(this)
+        this.handleKeyDown = this.handleKeyDown.bind(this)
     };
 
     buttonClickHandler() {
-   
+        this.setState({renderBall:true})
    }
+   handleKeyDown(event) {
+    if (event.key === 'ArrowRight' && event.keyCode === 39) {
+        this.setState({
+            ballPosition: { left: `${this.state.posi + 5}px` }
+        });
+        this.setState({ posi: this.state.posi + 5 });
+    }
+}
+   
     renderBallOrButton() {
 		if (this.state.renderBall) {
 		    return <div className="ball" style={this.state.ballPosition}></div>
 		} else {
-		    return <button onClick={this.buttonClickHandler} >Start</button>
+		    return <button className="start" onClick={this.buttonClickHandler} >Start</button>
 		}
     }
 
     // bind ArrowRight keydown event
     componentDidMount() {
-      
+        document.addEventListener('keydown', this.handleKeyDown);
     }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleKeyDown);
+    }
+    
 
     render() {
         return (
@@ -37,6 +56,8 @@ class App extends Component {
         )
     }
 }
+
+
 
 
 export default App;
